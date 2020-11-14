@@ -1,0 +1,408 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="/form/modernizr.flexbox.js"></script>
+    <script src="/form/modernizr.svgasimg.js"></script>
+    <style>
+      body {
+        background-color: aliceblue;
+      }
+      fieldset {
+        border: 0;
+        padding: 0.01px 0 0 0;
+        margin: 0;
+        min-width: 0;
+      }
+      @-moz-document url-prefix() {
+        fieldset {
+          display: table-cell;
+        }
+      }
+
+      textarea {
+        height: 10em;
+        resize: vertical;
+      }
+
+      input[type="radio"] {
+        margin-right: 0.75em;
+      }
+
+      button {
+        cursor: pointer;
+        border: 0;
+        outline: none;
+        padding: 0.5em 1em;
+        color: #fff;
+        border-radius: 0.25em;
+        font-size: 1em;
+        background-color: #173b6d;
+        background-image: linear-gradient(to bottom, #1a4a8e, #173b6d);
+        box-shadow: 0 0.25em 0 rgba(23, 59, 109, 0.3),
+          inset 0 1px 0 rgba(0, 0, 0, 0.3);
+      }
+      button:focus {
+        background-color: #2158a9;
+        background-image: linear-gradient(to bottom, #2063c0, #1d4d90);
+        box-shadow: 0 0.25em 0 rgba(23, 59, 109, 0.3),
+          inset 0 1px 0 rgba(0, 0, 0, 0.3);
+      }
+
+      ::-webkit-input-placeholder {
+        font-style: italic;
+      }
+      ::-ms-input-placeholder {
+        font-style: italic;
+      }
+      ::-moz-placeholder {
+        font-style: italic;
+      }
+
+      .form-help {
+        display: block;
+        position: absolute;
+        overflow: hidden;
+        width: 1px;
+        height: 1px;
+        clip: rect(0 0 0 0);
+      }
+      input:focus + .form-help {
+        padding: 0.5em;
+        margin-top: 0.5em;
+        border: 1px solid #2a80fa;
+        border-radius: 0.25em;
+        font-style: italic;
+        color: #737373;
+        background-color: #fff;
+        position: static;
+        width: auto;
+        height: auto;
+        crop: none;
+      }
+
+      .field-text :invalid {
+        border-color: #e72633;
+        box-shadow: 0 0 0.5em rgba(229, 43, 37, 0.5);
+      }
+
+      .fieldset-wrapper {
+        padding: 1em;
+        margin-bottom: 1em;
+        border: 1px solid #eee;
+        background-color: #fff;
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.25);
+      }
+      :root .fieldset-wrapper {
+        border: 0;
+      }
+
+      legend {
+        padding: 0 0 0.5em 0;
+        font-weight: bold;
+        color: #777;
+        display: table;
+      }
+
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      label {
+        display: block;
+        cursor: pointer;
+      }
+
+      .field-text {
+        max-width: 20em;
+      }
+      .field-text label,
+      .field-text input,
+      .field-prefixed,
+      .field-text textarea {
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .field-text input,
+      .field-text textarea {
+        padding: 0.375em 0.3125em 0.3125em;
+        border: 1px solid #ccc;
+        border-radius: 0.25em;
+        -webkit-appearance: none;
+      }
+      .field-text input:focus,
+      .field-text textarea:focus {
+        box-shadow: 0 0 0.5em rgba(93, 162, 248, 0.5);
+        border-color: #5da2f8;
+        outline: 0;
+      }
+      .field-prefix {
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 0.25em;
+      }
+      .field-prefixed input {
+        max-width: 12em;
+      }
+      .flexbox .field-prefixed {
+        display: flex;
+      }
+      .flexbox .field-prefix {
+        padding: 0 0.5em;
+        border-right: 0;
+        border-radius: 0.25em 0 0 0.25em;
+        display: flex;
+        align-items: center;
+      }
+      .flexbox .field-prefixed input {
+        max-width: 100%;
+        border-radius: 0 0.25em 0.25em 0;
+      }
+      @media only screen and (min-width: 35em) {
+        .flexbox .field-text {
+          display: flex;
+          max-width: 28em;
+        }
+
+        .flexbox .field-text label {
+          flex: 0 0 8em;
+          display: flex;
+          align-items: center;
+        }
+      }
+      .checkboxes {
+        list-style: none;
+        padding: 0;
+        column-width: 10em;
+      }
+      .checkboxes li {
+        min-height: 1.5em;
+        margin-bottom: 0.5em;
+      }
+      /**
+      * 1. Set inline block + 100% width on <li> elements, to avoid multi-column
+      *    bug where margin flows across columns in WebKit/Blink.
+      *    This selector is only recognized by WebKit/Blink.
+      */
+      .checkboxes li:not(*:root) {
+        width: 100%; /* [1] */
+        display: inline-block; /* [1] */
+      }
+      .checkboxes input[type="checkbox"] + label {
+        display: inline-block;
+      }
+      /* only target IE9+, so to speak. */
+      :root input[type="checkbox"] {
+        position: absolute;
+        overflow: hidden;
+        width: 1px;
+        height: 1px;
+        clip: rect(0 0 0 0);
+      }
+
+      :root input[type="checkbox"] + label {
+        line-height: 1.5;
+        color: #333;
+        padding-left: 1.5em;
+        background-position: 0.125em 36%;
+        background-repeat: no-repeat;
+        background-size: 18px 18px;
+      }
+
+      /** 
+      * fallbacks to png for when :checked is supported but no svg support/no js.
+      * (in effect for Android 2.X)
+      */
+      :root input[type="checkbox"] + label {
+        background-image: url(/form/images/checkbox-unchecked.png);
+      }
+      :root input[type="checkbox"]:checked + label {
+        background-image: url(/form/images/checkbox-checked.png);
+      }
+      :root input[type="checkbox"]:focus + label {
+        background-image: url(/form/images/checkbox-unchecked-focus.png);
+      }
+      :root input[type="checkbox"]:focus:checked + label {
+        background-image: url(/form/images/checkbox-checked-focus.png);
+      }
+      /**
+      * Modern browsers supporting SVG will get the inline SVG as data URI:s.
+      * The SVG file is basically raw in the URL, but encoded to escape the SVG
+      * code.
+      * This boosts performance by cutting the number of requests and prevents
+      * an ugly "white flash" as the browser switches from one graphic to the next
+      * before all images have loaded.
+      */
+
+      /* unchecked checkbox: */
+      :root.svgasimg input[type="checkbox"] + label {
+        background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2036%2036%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Cpath%20fill%3D%22%23fff%22%20stroke%3D%22%23ccc%22%20stroke-width%3D%222%22%20stroke-miterlimit%3D%2210%22%20d%3D%22M35%2029c0%203.3-2.7%206-6%206H7c-3.3%200-6-2.7-6-6V7c0-3.3%202.7-6%206-6h22c3.3%200%206%202.7%206%206v22z%22%2F%3E%3C%2Fsvg%3E);
+      }
+      /* checked checkbox: */
+      :root.svgasimg input[type="checkbox"]:checked + label {
+        background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2036%2036%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Cpath%20fill%3D%22%23fff%22%20stroke%3D%22%23ccc%22%20stroke-width%3D%222%22%20stroke-miterlimit%3D%2210%22%20d%3D%22M35%2029c0%203.3-2.7%206-6%206H7c-3.3%200-6-2.7-6-6V7c0-3.3%202.7-6%206-6h22c3.3%200%206%202.7%206%206v22z%22%2F%3E%3Cpath%20fill%3D%22%231A4A8E%22%20d%3D%22M26%205l5.2%206.7S19.1%2031.2%2019.1%2031.3L5%2021l4-4%209%207%208-19z%22%2F%3E%3C%2Fsvg%3E);
+      }
+      /* focused (but unchecked) checkbox: */
+      :root.svgasimg input[type="checkbox"]:focus + label {
+        color: #000;
+        background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2036%2036%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Cpath%20fill%3D%22%23fff%22%20stroke%3D%22%235DA2F8%22%20stroke-width%3D%222%22%20stroke-miterlimit%3D%2210%22%20d%3D%22M35%2029c0%203.3-2.7%206-6%206H7c-3.3%200-6-2.7-6-6V7c0-3.3%202.7-6%206-6h22c3.3%200%206%202.7%206%206v22z%22%2F%3E%3C%2Fsvg%3E);
+      }
+      /* checked and focused checkbox: */
+      :root.svgasimg input[type="checkbox"]:focus:checked + label {
+        background-image: url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2036%2036%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Cpath%20fill%3D%22%23fff%22%20stroke%3D%22%235DA2F8%22%20stroke-width%3D%222%22%20stroke-miterlimit%3D%2210%22%20d%3D%22M35%2029c0%203.3-2.7%206-6%206H7c-3.3%200-6-2.7-6-6V7c0-3.3%202.7-6%206-6h22c3.3%200%206%202.7%206%206v22z%22%2F%3E%3Cpath%20fill%3D%22%231A4A8E%22%20d%3D%22M26%205l5.2%206.7S19.1%2031.2%2019.1%2031.3L5%2021l4-4%209%207%208-19z%22%2F%3E%3C%2Fsvg%3E);
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/comments" id="comments_from" method="POST">
+      <div class="fieldset-wrapper">
+        <fieldset>
+          <legend>Your Contact Details</legend>
+          <p class="field field-text">
+            <label for="comment-author">Name:</label>
+            <input type="text" name="comment-author" id="comment-author" />
+          </p>
+          <p class="field field-text">
+            <label for="comment-email">Email Address:</label>
+            <input type="email" name="comment-email" id="comment-email" />
+          </p>
+          <p class="field field-text" style="align-items: baseline">
+            <label for="comment-url">Web Address:</label>
+            <span style="width: 100%">
+              <input
+                placeholder="http://example.com"
+                type="url"
+                name="comment-url"
+                id="comment-url"
+                aria-describedby="comment-url-help"
+              />
+              <span id="comment-url-help" role="tooltip" class="form-help"
+                >Fill in your URL if you have one. Make sure to include the
+                "http://"-part.</span
+              >
+            </span>
+          </p>
+          <p class="field field-text">
+            <label for="application-twitter">Twitter handle:</label>
+            <span class="field-prefixed">
+              <span
+                class="field-prefix"
+                id="application-twitter-prefix"
+                aria-label="You can omit the @"
+                >@</span
+              >
+              <input
+                type="text"
+                aria-describedby="application-twitter-prefix"
+                name="application-twitter"
+                id="application-twitter"
+              />
+            </span>
+          </p>
+        </fieldset>
+      </div>
+
+      <div class="fieldset-wrapper">
+        <fieldset>
+          <legend>Which languages have you mastered?</legend>
+          <ul class="checkboxes">
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">BASIC</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">C#</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">C++</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+            <li>
+              <input type="checkbox" id="lang-as" name="lang-as" />
+              <label for="lang-as">ActionScript</label>
+            </li>
+          </ul>
+        </fieldset>
+      </div>
+
+      <div class="fieldset-wrapper">
+        <fieldset>
+          <legend>Comments</legend>
+          <p class="field field-text">
+            <label for="comment-text">Message:</label>
+            <textarea
+              name="comment-text"
+              id="comment-text"
+              cols="20"
+              rows="10"
+            ></textarea>
+          </p>
+        </fieldset>
+      </div>
+
+      <div class="fieldset-wrapper">
+        <fieldset>
+          <legend>Remember Me</legend>
+          <p class="field">
+            <label>
+              <input type="radio" name="comment-remember" value="yes" /> Yes
+            </label>
+          </p>
+          <p class="field">
+            <label>
+              <input type="radio" name="comment-remember" value="no" /> No
+            </label>
+          </p>
+        </fieldset>
+      </div>
+
+      <button type="submit">Post comment</button>
+    </form>
+  </body>
+</html>
